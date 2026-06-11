@@ -1,0 +1,51 @@
+Step 1 : Requirement Gathering
+
+Functional Requirements
+1.Search Movies
+2.view theatres
+3.view shows
+4.view seats
+5.book seats
+6.make payment
+7.cancel booking
+
+Non Functional Requirements
+1.Prevent double booking
+2.Scalable
+3.High Available
+4.Maintenance
+5.Extensibility
+
+Step 2: Find Nouns
+
+Movies
+Theatres has movies , has screens has shows
+Screen
+Shows -> timing
+Seats -> type of seats , premium, classic , normal -> is-a
+Payment -> depends on seat type, screen type and user also
+User
+Booking
+
+Step 3: Think about relationships
+
+can movie exist without theatre ?
+yes
+
+can theatre exist without movie?
+yes
+
+can show exist without movie?
+no
+
+therefore
+
+movie 1------- * show
+
+theatre 1------ * screen
+
+screen 1------ * seats
+
+show 1----- 1 screen
+
+
