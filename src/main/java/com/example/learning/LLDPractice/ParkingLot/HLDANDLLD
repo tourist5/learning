@@ -1,0 +1,38 @@
+Functional Requirements
+Park Vehicle
+Unpark Vehicle
+Generate Ticket
+Calculate Parking Fee
+Multiple Floors
+Multiple Spot Types
+
+step1 identify requirements
+
+park vehicle
+unpark vehicle
+calculate parking fee
+multiple floors
+multiple spot types
+generate ticket
+
+Non Functional Requirements
+Extensible
+Thread-safe
+Maintainable
+
+step 2: identify the classes
+
+see noun
+
+1.vehicle -> car , bus, truck
+2.floor
+3.ticket
+4.parking spot
+5.parking lot
+6.pricing strategy
+
+step 2-> relationships
+
+parking lot  has-a floor
+floor has-a spot
+car,truck is a vehicle
