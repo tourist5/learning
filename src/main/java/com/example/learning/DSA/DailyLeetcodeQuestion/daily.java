@@ -12,7 +12,7 @@ public class daily {
         };
         int ans = assignEdgeWeights(edges);
         int mod = 1000000007;
-        System.out.println(pow(2,ans-1,mod));
+        System.out.println(pow(2, ans - 1, mod));
     }
 
     public static int assignEdgeWeights(int[][] edges) {
@@ -36,25 +36,27 @@ public class daily {
         List<Integer> childs = keyIsNodeAndValueIsChildren.get(currentEle);
         for (Integer child : childs) {
             if (!visited.contains(child)) {
-                int currentRes = 1+ dfs(keyIsNodeAndValueIsChildren, visited,  child);
-                maxDepth  = Math.max(maxDepth,currentRes);
+                int currentRes = 1 + dfs(keyIsNodeAndValueIsChildren, visited, child);
+                maxDepth = Math.max(maxDepth, currentRes);
             }
         }
         return maxDepth;
     }
 
-    static int pow(int x, int pow,int mod) {
+    static int pow(int x, int pow, int mod) {
         int res = 1;
 
         while (pow > 0) {
             if ((pow & 1) == 1) {
-                res =(res*x)%mod;
+                res = (res * x) % mod;
             }
 
-            x =(x*x)%mod;
+            x = (x * x) % mod;
             pow >>= 1;
         }
 
         return res;
     }
+
+
 }
