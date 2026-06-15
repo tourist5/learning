@@ -1,4 +1,4 @@
-package com.example.learning.DSA;
+package com.example.learning.DSA.SegmentTreeDsa;
 
 import java.util.Arrays;
 

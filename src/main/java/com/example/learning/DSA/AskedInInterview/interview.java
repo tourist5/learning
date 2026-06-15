@@ -1,11 +1,4 @@
-package com.example.learning.DSA;
-
-import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
-
-import java.sql.BatchUpdateException;
-import java.util.AbstractCollection;
-import java.util.HashSet;
-import java.util.Set;
+package com.example.learning.DSA.AskedInInterview;
 
 public class interview {
     public static void main(String[] args) {

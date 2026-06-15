@@ -1,7 +1,4 @@
-package com.example.learning.DSA;
-
-import java.util.Arrays;
-import java.util.PriorityQueue;
+package com.example.learning.DSA.TrieDsaQuestions;
 
 public class TrieDataStructure {
     static class TrieNode {
