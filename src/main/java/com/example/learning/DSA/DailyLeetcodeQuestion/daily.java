@@ -58,5 +58,11 @@ public class daily {
         return res;
     }
 
+    public double angleClock(int hour, int minutes) {
+        int totalMinute = hour*60+minutes;
+        double hourAngleCovered = totalMinute*0.5;
+        double minuteAngleCovered = minutes*6;
+        return Math.min(Math.abs(hourAngleCovered-minuteAngleCovered),360-Math.abs(hourAngleCovered-minuteAngleCovered));
+    }
 
 }
