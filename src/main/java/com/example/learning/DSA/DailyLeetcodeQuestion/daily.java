@@ -68,29 +68,44 @@ public class daily {
     public int maxNumberOfBalloons(String text) {
         int len = text.length();
         int[] frequency = new int[26];
-        for(int i=0;i<len;i++) {
+        for (int i = 0; i < len; i++) {
             char c = text.charAt(i);
-            if(c=='a'||c=='b'||c=='l'||c=='n'||c=='o') {
+            if (c == 'a' || c == 'b' || c == 'l' || c == 'n' || c == 'o') {
                 int index = text.charAt(i) - 'a';
                 frequency[index]++;
             }
         }
         int mi = Integer.MAX_VALUE;
-        for(int i=0;i<26;i++) {
-            char c = (char) (i+'a');
-            if(c=='a'||c=='b'||c=='l'||c=='n'||c=='o') {
+        for (int i = 0; i < 26; i++) {
+            char c = (char) (i + 'a');
+            if (c == 'a' || c == 'b' || c == 'l' || c == 'n' || c == 'o') {
                 int fr;
-                if(c=='l'||c=='o') {
-                     fr = frequency[i]/2;
+                if (c == 'l' || c == 'o') {
+                    fr = frequency[i] / 2;
                 } else {
-                     fr = frequency[i];
+                    fr = frequency[i];
                 }
-                mi = Math.min(mi,fr);
+                mi = Math.min(mi, fr);
             }
         }
 
         return mi;
 
+    }
+
+    public int maxIceCream(int[] costs, int coins) {
+        Arrays.sort(costs);
+        if(coins<costs[0]) {
+            return 0;
+        }
+        long preSum = 0;
+        for(int i=0;i<costs.length;i++) {
+            preSum+=costs[i];
+            if(preSum>coins) {
+                return i;
+            }
+        }
+        return costs.length;
     }
 
 }
