@@ -59,10 +59,38 @@ public class daily {
     }
 
     public double angleClock(int hour, int minutes) {
-        int totalMinute = hour*60+minutes;
-        double hourAngleCovered = totalMinute*0.5;
-        double minuteAngleCovered = minutes*6;
-        return Math.min(Math.abs(hourAngleCovered-minuteAngleCovered),360-Math.abs(hourAngleCovered-minuteAngleCovered));
+        int totalMinute = hour * 60 + minutes;
+        double hourAngleCovered = totalMinute * 0.5;
+        double minuteAngleCovered = minutes * 6;
+        return Math.min(Math.abs(hourAngleCovered - minuteAngleCovered), 360 - Math.abs(hourAngleCovered - minuteAngleCovered));
+    }
+
+    public int maxNumberOfBalloons(String text) {
+        int len = text.length();
+        int[] frequency = new int[26];
+        for(int i=0;i<len;i++) {
+            char c = text.charAt(i);
+            if(c=='a'||c=='b'||c=='l'||c=='n'||c=='o') {
+                int index = text.charAt(i) - 'a';
+                frequency[index]++;
+            }
+        }
+        int mi = Integer.MAX_VALUE;
+        for(int i=0;i<26;i++) {
+            char c = (char) (i+'a');
+            if(c=='a'||c=='b'||c=='l'||c=='n'||c=='o') {
+                int fr;
+                if(c=='l'||c=='o') {
+                     fr = frequency[i]/2;
+                } else {
+                     fr = frequency[i];
+                }
+                mi = Math.min(mi,fr);
+            }
+        }
+
+        return mi;
+
     }
 
 }
