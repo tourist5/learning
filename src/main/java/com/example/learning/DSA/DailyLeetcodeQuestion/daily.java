@@ -95,17 +95,54 @@ public class daily {
 
     public int maxIceCream(int[] costs, int coins) {
         Arrays.sort(costs);
-        if(coins<costs[0]) {
+        if (coins < costs[0]) {
             return 0;
         }
         long preSum = 0;
-        for(int i=0;i<costs.length;i++) {
-            preSum+=costs[i];
-            if(preSum>coins) {
+        for (int i = 0; i < costs.length; i++) {
+            preSum += costs[i];
+            if (preSum > coins) {
                 return i;
             }
         }
         return costs.length;
+    }
+
+    public long countMajoritySubarrays(int[] nums, int target) {
+        int len = nums.length;
+        for(int i=0;i<len;i++) {
+            if(nums[i]==target) {
+                nums[i]=1;
+            } else {
+                nums[i] = -1;
+            }
+        }
+
+        int[] prefix = new int[len];
+        prefix[0] = nums[0];
+
+        for(int i=1;i<len;i++) {
+            prefix[i] = prefix[i-1]+nums[i];
+        }
+        int shift = len;
+        int[] frequency = new int[2*len+1];
+        frequency[shift] = 1;
+        long ans = 0;
+        long valid = 0;
+        int last = 0;
+
+        for(int i=0;i<len;i++) {
+            if(prefix[i]>last) {
+                valid = valid+frequency[last+shift];
+            } else {
+                valid = valid-frequency[prefix[i]+shift];
+            }
+            ans+=valid;
+            frequency[prefix[i]+shift]++;
+            last = prefix[i];
+        }
+
+        return ans;
     }
 
 }
