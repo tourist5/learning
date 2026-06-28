@@ -4,15 +4,24 @@ import java.util.*;
 
 public class daily {
     public static void main(String[] args) {
-        int[][] edges = {
-                {1, 2},
-                {1, 3},
-                {3, 4},
-                {3, 5}
-        };
-        int ans = assignEdgeWeights(edges);
-        int mod = 1000000007;
-        System.out.println(pow(2, ans - 1, mod));
+//        int[][] edges = {
+//                {1, 2},
+//                {1, 3},
+//                {3, 4},
+//                {3, 5}
+//        };
+//        int ans = assignEdgeWeights(edges);
+//        int mod = 1000000007;
+//        System.out.println(pow(2, ans - 1, mod));
+        checkSqrtIsAPerfectNumber(16);
+    }
+
+    public static void checkSqrtIsAPerfectNumber(int n) {
+        int ValueSqrt = (int) Math.sqrt(n);
+        System.out.println("sqrt is " + ValueSqrt);
+        if ((ValueSqrt * ValueSqrt == n)) {
+            System.out.println("Perfect square root " + ValueSqrt + " for number " + n);
+        }
     }
 
     public static int assignEdgeWeights(int[][] edges) {
@@ -110,9 +119,9 @@ public class daily {
 
     public long countMajoritySubarrays(int[] nums, int target) {
         int len = nums.length;
-        for(int i=0;i<len;i++) {
-            if(nums[i]==target) {
-                nums[i]=1;
+        for (int i = 0; i < len; i++) {
+            if (nums[i] == target) {
+                nums[i] = 1;
             } else {
                 nums[i] = -1;
             }
@@ -121,28 +130,105 @@ public class daily {
         int[] prefix = new int[len];
         prefix[0] = nums[0];
 
-        for(int i=1;i<len;i++) {
-            prefix[i] = prefix[i-1]+nums[i];
+        for (int i = 1; i < len; i++) {
+            prefix[i] = prefix[i - 1] + nums[i];
         }
         int shift = len;
-        int[] frequency = new int[2*len+1];
+        int[] frequency = new int[2 * len + 1];
         frequency[shift] = 1;
         long ans = 0;
         long valid = 0;
         int last = 0;
 
-        for(int i=0;i<len;i++) {
-            if(prefix[i]>last) {
-                valid = valid+frequency[last+shift];
+        for (int i = 0; i < len; i++) {
+            if (prefix[i] > last) {
+                valid = valid + frequency[last + shift];
             } else {
-                valid = valid-frequency[prefix[i]+shift];
+                valid = valid - frequency[prefix[i] + shift];
             }
-            ans+=valid;
-            frequency[prefix[i]+shift]++;
+            ans += valid;
+            frequency[prefix[i] + shift]++;
             last = prefix[i];
         }
 
         return ans;
     }
 
+    public int maximumLength(int[] nums) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            int temp = num;
+            if (num == 1) {
+                map.put(temp, map.getOrDefault(temp, 0) + 1);
+            } else {
+                while (temp > 0) {
+                    map.put(temp, map.getOrDefault(temp, 0) + 1);
+                    int ValueSqrt = (int) Math.sqrt(temp);
+                    if ((ValueSqrt * ValueSqrt == temp)) {
+                        temp = ValueSqrt;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
+        int ma = 0;
+        for (Map.Entry<Integer, Integer> ele : map.entrySet()) {
+            ma = Math.max(ma, ele.getValue());
+        }
+
+        return ma;
+    }
+
+    public int maximumLength2(int[] nums) {
+        Map<Integer,Integer> map  = new HashMap<>();
+        for (int num : nums) {
+            map.put(num, map.getOrDefault(num, 0) + 1);
+        }
+
+        int ans = 0;
+
+        if(map.containsKey(1)) {
+            int cntOne = map.get(1);
+            if(cntOne%2==0) {
+                ans = Math.max(ans,cntOne-1);
+            }
+            else {
+                ans = Math.max(ans,cntOne);
+            }
+        }
+
+
+
+        for(Map.Entry<Integer, Integer> mapCur : map.entrySet()) {
+            int key = mapCur.getKey();
+            int value = mapCur.getValue();
+
+            if(key==1) {
+                continue;
+            }
+
+            // take cur element as first starting element
+            int len = 0;
+
+            while(value>=2) {
+                len+=2;
+                key= key*key;
+                value = map.getOrDefault(key,0);
+            }
+
+            if(map.containsKey(key)) {
+                len+=1;
+            } else {
+                len-=1;
+            }
+
+            ans = Math.max(ans,len);
+        }
+
+        return ans;
+
+
+
+    }
 }
