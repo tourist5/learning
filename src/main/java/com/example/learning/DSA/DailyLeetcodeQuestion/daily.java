@@ -181,54 +181,88 @@ public class daily {
     }
 
     public int maximumLength2(int[] nums) {
-        Map<Integer,Integer> map  = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
         for (int num : nums) {
             map.put(num, map.getOrDefault(num, 0) + 1);
         }
 
         int ans = 0;
 
-        if(map.containsKey(1)) {
+        if (map.containsKey(1)) {
             int cntOne = map.get(1);
-            if(cntOne%2==0) {
-                ans = Math.max(ans,cntOne-1);
-            }
-            else {
-                ans = Math.max(ans,cntOne);
+            if (cntOne % 2 == 0) {
+                ans = Math.max(ans, cntOne - 1);
+            } else {
+                ans = Math.max(ans, cntOne);
             }
         }
 
 
-
-        for(Map.Entry<Integer, Integer> mapCur : map.entrySet()) {
+        for (Map.Entry<Integer, Integer> mapCur : map.entrySet()) {
             int key = mapCur.getKey();
             int value = mapCur.getValue();
 
-            if(key==1) {
+            if (key == 1) {
                 continue;
             }
 
             // take cur element as first starting element
             int len = 0;
 
-            while(value>=2) {
-                len+=2;
-                key= key*key;
-                value = map.getOrDefault(key,0);
+            while (value >= 2) {
+                len += 2;
+                key = key * key;
+                value = map.getOrDefault(key, 0);
             }
 
-            if(map.containsKey(key)) {
-                len+=1;
+            if (map.containsKey(key)) {
+                len += 1;
             } else {
-                len-=1;
+                len -= 1;
             }
 
-            ans = Math.max(ans,len);
+            ans = Math.max(ans, len);
         }
 
         return ans;
 
-
-
     }
+
+    public int maximumElementAfterDecrementingAndRearranging(int[] arr) {
+        int len = arr.length;
+        int[] freq = new int[len+1];
+        for(int i=0;i<len;i++) {
+            if(arr[i]>len) {
+                arr[i] = len;
+            }
+            freq[arr[i]] ++;
+        }
+        int index = 0;
+
+        for(int i=1;i<=len;i++) {
+            if(freq[i]==0) {
+                continue;
+            }
+
+            int cnt = freq[i];
+
+            for(int j=1;j<=cnt;j++) {
+                arr[index] = i;
+                index++;
+            }
+
+        }
+
+        arr[0]=1;
+        for(int i=1;i<len;i++) {
+            if(arr[i]==arr[i-1]) {
+                arr[i] = arr[i-1];
+            } else {
+                arr[i] = arr[i-1]+1;
+            }
+        }
+
+        return arr[len-1];
+    }
+
 }
