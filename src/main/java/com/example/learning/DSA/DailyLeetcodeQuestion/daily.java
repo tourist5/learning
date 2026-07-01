@@ -13,8 +13,28 @@ public class daily {
 //        int ans = assignEdgeWeights(edges);
 //        int mod = 1000000007;
 //        System.out.println(pow(2, ans - 1, mod));
-        checkSqrtIsAPerfectNumber(16);
+        //  checkSqrtIsAPerfectNumber(16);
+        //System.out.println(numberOfSubstrings("aaacb"));
+//        List<List<Integer>> grid = new ArrayList<>(
+//                Arrays.asList(
+//                        Arrays.asList(0, 0, 1),
+//                        Arrays.asList(0, 0, 0),
+//                        Arrays.asList(0, 0, 0)
+//                )
+//        );
+        List<List<Integer>> grid = new ArrayList<>(
+                Arrays.asList(
+                        Arrays.asList(0, 0, 0, 1),
+                        Arrays.asList(0, 0, 0, 0),
+                        Arrays.asList(0, 0, 0, 0),
+                        Arrays.asList(1, 0, 0, 0)
+                )
+        );
+        System.out.println(maximumSafenessFactor(grid));
     }
+
+    //6-2=4
+    //abc
 
     public static void checkSqrtIsAPerfectNumber(int n) {
         int ValueSqrt = (int) Math.sqrt(n);
@@ -230,39 +250,162 @@ public class daily {
 
     public int maximumElementAfterDecrementingAndRearranging(int[] arr) {
         int len = arr.length;
-        int[] freq = new int[len+1];
-        for(int i=0;i<len;i++) {
-            if(arr[i]>len) {
+        int[] freq = new int[len + 1];
+        for (int i = 0; i < len; i++) {
+            if (arr[i] > len) {
                 arr[i] = len;
             }
-            freq[arr[i]] ++;
+            freq[arr[i]]++;
         }
         int index = 0;
 
-        for(int i=1;i<=len;i++) {
-            if(freq[i]==0) {
+        for (int i = 1; i <= len; i++) {
+            if (freq[i] == 0) {
                 continue;
             }
 
             int cnt = freq[i];
 
-            for(int j=1;j<=cnt;j++) {
+            for (int j = 1; j <= cnt; j++) {
                 arr[index] = i;
                 index++;
             }
 
         }
 
-        arr[0]=1;
-        for(int i=1;i<len;i++) {
-            if(arr[i]==arr[i-1]) {
-                arr[i] = arr[i-1];
+        arr[0] = 1;
+        for (int i = 1; i < len; i++) {
+            if (arr[i] == arr[i - 1]) {
+                arr[i] = arr[i - 1];
             } else {
-                arr[i] = arr[i-1]+1;
+                arr[i] = arr[i - 1] + 1;
             }
         }
 
-        return arr[len-1];
+        return arr[len - 1];
+    }
+
+    //abcabc
+
+    public static int numberOfSubstrings(String s) {
+        int len = s.length();
+        int[] freq = new int[3];
+        int left = 0;
+        int right = 0;
+        int ans = 0;
+        while (right >= left && right < len) {
+            char current = s.charAt(right);
+            freq[current - 'a']++;
+            int countDistinct = 0;
+            for (int j = 0; j < 3; j++) {
+                if (freq[j] > 0) {
+                    countDistinct++;
+                }
+            }
+            if (countDistinct == 3) {
+                while (left <= right) {
+                    ans = ans + len - right;
+                    char leftChar = s.charAt(left);
+                    if (freq[leftChar - 'a'] != 0) {
+                        freq[leftChar - 'a']--;
+                    }
+                    left++;
+                    if (freq[leftChar - 'a'] == 0) {
+                        break;
+                    }
+                }
+            }
+            right++;
+        }
+        return ans;
+
+    }
+
+    //
+    static class  Pair {
+        int r;
+        int c;
+        Pair(int r,int c) {
+            this.r = r;
+            this.c = c;
+        }
+    }
+
+    static boolean  valid(int currentRow,int currentCol,int row,int col,boolean[][] visited) {
+        return 0 <= currentRow && currentRow < row && 0 <= currentCol && currentCol < col && !visited[currentRow][currentCol];
+    }
+
+    public static  int  maximumSafenessFactor(List<List<Integer>> grid) {
+        int row = grid.size();
+        int col = grid.get(0).size();
+
+        ArrayDeque<Pair> queueForMarkingDistance = new ArrayDeque<>();
+        boolean[][] visited = new boolean[row][col];
+        for(int i=0;i<row;i++) {
+            for(int j=0;j<col;j++) {
+                if(grid.get(i).get(j)==1) {
+                    visited[i][j]=true;
+                    queueForMarkingDistance.addLast(new Pair(i,j));
+                }
+            }
+        }
+
+        int level = 0;
+        int[][] dist ={{1,0},{-1,0},{0,1},{0,-1}};
+        while(!queueForMarkingDistance.isEmpty()) {
+            int size = queueForMarkingDistance.size();
+            for(int i=0;i<size;i++) {
+                Pair pair = queueForMarkingDistance.removeFirst();
+                int removedRow = pair.r;
+                int removedCol = pair.c;
+                grid.get(removedRow).set(removedCol,level);
+                //System.out.println("grid changed value " + removedRow + " " +  removedCol + " " + grid.get(removedRow).get(removedCol) );
+                for(int[] currentDist:dist) {
+                    int newRow = removedRow+currentDist[0];
+                    int newCol = removedCol+currentDist[1];
+                    if(valid(newRow,newCol,row,col,visited)) {
+                        visited[newRow][newCol] = true;
+                        queueForMarkingDistance.addLast(new Pair(newRow,newCol));
+                    }
+                }
+            }
+            level++;
+        }
+
+       // System.out.println("grid after dist " +  grid);
+
+        if(grid.get(0).get(0)==0 || grid.get(row-1).get(col-1)==0) {
+            return 0;
+        }
+        //now dijikstra with maximum distance
+
+        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>((a,b)->b[2]-a[2]);
+
+        priorityQueue.add(new int[]{0,0,grid.get(0).get(0)});
+        boolean[][] visitedDijkstra = new boolean[row][col];
+        visitedDijkstra[0][0] = true;
+        int ans = Integer.MAX_VALUE;
+        while (!priorityQueue.isEmpty()) {
+            int[] poll = priorityQueue.poll();
+            int removedRow = poll[0];
+            int removedCol = poll[1];
+            int value = poll[2];
+            ans = Math.min(ans,value);
+            if(removedRow==row-1 && removedCol==col-1) {
+                return ans;
+            }
+            for(int[] currentDist: dist) {
+                int newRow = removedRow+currentDist[0];
+                int newCol = removedCol+currentDist[1];
+                if(valid(newRow,newCol,row,col,visitedDijkstra)) {
+                    visitedDijkstra[newRow][newCol] = true;
+                    priorityQueue.offer(new int[]{newRow,newCol,grid.get(newRow).get(newCol)});
+                }
+            }
+        }
+
+        return ans;
+
     }
 
 }
