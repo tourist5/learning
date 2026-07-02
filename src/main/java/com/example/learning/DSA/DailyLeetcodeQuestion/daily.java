@@ -22,15 +22,13 @@ public class daily {
 //                        Arrays.asList(0, 0, 0)
 //                )
 //        );
-        List<List<Integer>> grid = new ArrayList<>(
-                Arrays.asList(
-                        Arrays.asList(0, 0, 0, 1),
-                        Arrays.asList(0, 0, 0, 0),
-                        Arrays.asList(0, 0, 0, 0),
-                        Arrays.asList(1, 0, 0, 0)
-                )
+        List<List<Integer>> matrix = Arrays.asList(
+                Arrays.asList(0, 1, 1, 0, 0, 0),
+                Arrays.asList(1, 0, 1, 0, 0, 0),
+                Arrays.asList(0, 1, 1, 1, 0, 1),
+                Arrays.asList(0, 0, 1, 0, 1, 0)
         );
-        System.out.println(maximumSafenessFactor(grid));
+        System.out.println(findSafeWalk(matrix,5));
     }
 
     //6-2=4
@@ -322,66 +320,67 @@ public class daily {
     }
 
     //
-    static class  Pair {
+    static class Pair {
         int r;
         int c;
-        Pair(int r,int c) {
+
+        Pair(int r, int c) {
             this.r = r;
             this.c = c;
         }
     }
 
-    static boolean  valid(int currentRow,int currentCol,int row,int col,boolean[][] visited) {
+    static boolean valid(int currentRow, int currentCol, int row, int col, boolean[][] visited) {
         return 0 <= currentRow && currentRow < row && 0 <= currentCol && currentCol < col && !visited[currentRow][currentCol];
     }
 
-    public static  int  maximumSafenessFactor(List<List<Integer>> grid) {
+    public static int maximumSafenessFactor(List<List<Integer>> grid) {
         int row = grid.size();
         int col = grid.get(0).size();
 
         ArrayDeque<Pair> queueForMarkingDistance = new ArrayDeque<>();
         boolean[][] visited = new boolean[row][col];
-        for(int i=0;i<row;i++) {
-            for(int j=0;j<col;j++) {
-                if(grid.get(i).get(j)==1) {
-                    visited[i][j]=true;
-                    queueForMarkingDistance.addLast(new Pair(i,j));
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (grid.get(i).get(j) == 1) {
+                    visited[i][j] = true;
+                    queueForMarkingDistance.addLast(new Pair(i, j));
                 }
             }
         }
 
         int level = 0;
-        int[][] dist ={{1,0},{-1,0},{0,1},{0,-1}};
-        while(!queueForMarkingDistance.isEmpty()) {
+        int[][] dist = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        while (!queueForMarkingDistance.isEmpty()) {
             int size = queueForMarkingDistance.size();
-            for(int i=0;i<size;i++) {
+            for (int i = 0; i < size; i++) {
                 Pair pair = queueForMarkingDistance.removeFirst();
                 int removedRow = pair.r;
                 int removedCol = pair.c;
-                grid.get(removedRow).set(removedCol,level);
+                grid.get(removedRow).set(removedCol, level);
                 //System.out.println("grid changed value " + removedRow + " " +  removedCol + " " + grid.get(removedRow).get(removedCol) );
-                for(int[] currentDist:dist) {
-                    int newRow = removedRow+currentDist[0];
-                    int newCol = removedCol+currentDist[1];
-                    if(valid(newRow,newCol,row,col,visited)) {
+                for (int[] currentDist : dist) {
+                    int newRow = removedRow + currentDist[0];
+                    int newCol = removedCol + currentDist[1];
+                    if (valid(newRow, newCol, row, col, visited)) {
                         visited[newRow][newCol] = true;
-                        queueForMarkingDistance.addLast(new Pair(newRow,newCol));
+                        queueForMarkingDistance.addLast(new Pair(newRow, newCol));
                     }
                 }
             }
             level++;
         }
 
-       // System.out.println("grid after dist " +  grid);
+        // System.out.println("grid after dist " +  grid);
 
-        if(grid.get(0).get(0)==0 || grid.get(row-1).get(col-1)==0) {
+        if (grid.get(0).get(0) == 0 || grid.get(row - 1).get(col - 1) == 0) {
             return 0;
         }
         //now dijikstra with maximum distance
 
-        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>((a,b)->b[2]-a[2]);
+        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>((a, b) -> b[2] - a[2]);
 
-        priorityQueue.add(new int[]{0,0,grid.get(0).get(0)});
+        priorityQueue.add(new int[]{0, 0, grid.get(0).get(0)});
         boolean[][] visitedDijkstra = new boolean[row][col];
         visitedDijkstra[0][0] = true;
         int ans = Integer.MAX_VALUE;
@@ -390,16 +389,16 @@ public class daily {
             int removedRow = poll[0];
             int removedCol = poll[1];
             int value = poll[2];
-            ans = Math.min(ans,value);
-            if(removedRow==row-1 && removedCol==col-1) {
+            ans = Math.min(ans, value);
+            if (removedRow == row - 1 && removedCol == col - 1) {
                 return ans;
             }
-            for(int[] currentDist: dist) {
-                int newRow = removedRow+currentDist[0];
-                int newCol = removedCol+currentDist[1];
-                if(valid(newRow,newCol,row,col,visitedDijkstra)) {
+            for (int[] currentDist : dist) {
+                int newRow = removedRow + currentDist[0];
+                int newCol = removedCol + currentDist[1];
+                if (valid(newRow, newCol, row, col, visitedDijkstra)) {
                     visitedDijkstra[newRow][newCol] = true;
-                    priorityQueue.offer(new int[]{newRow,newCol,grid.get(newRow).get(newCol)});
+                    priorityQueue.offer(new int[]{newRow, newCol, grid.get(newRow).get(newCol)});
                 }
             }
         }
@@ -408,4 +407,46 @@ public class daily {
 
     }
 
+    static boolean valid2(int currentRow,int currentCol, int row, int col, boolean[][] visited) {
+        return currentRow >= 0 && currentRow < row && currentCol >= 0 && currentCol < col && !visited[currentRow][currentCol];
+    }
+
+    public static boolean findSafeWalk(List<List<Integer>> grid, int health) {
+        int row = grid.size();
+        int col = grid.get(0).size();
+
+        //use dijkstra algorithm , to find the shortest path or the least health to go to end position
+
+       // [[1,1,1],[1,0,1],[1,1,1]], health = 5
+        boolean[][] visited = new boolean[row][col];
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->a[2]-b[2]);
+        int count  = 0;
+        visited[0][0] = true;
+        pq.offer(new int[]{0,0,grid.get(0).get(0)});
+        int[][] dist = {{1,0},{-1,0},{0,1},{0,-1}};
+        while (!pq.isEmpty()) {
+            int[] poll = pq.poll();
+            int removedRow = poll[0];
+            int removedCol = poll[1];
+            int value = poll[2];
+            System.out.println(Arrays.toString(poll));
+
+            if(removedRow==row-1 && removedCol==col-1) {
+                return health >= value;
+            }
+
+            for(int[] currentDist : dist) {
+                int newRow = removedRow+currentDist[0];
+                int newCol = removedCol+currentDist[1];
+                if(valid2(newRow,newCol,row,col,visited)) {
+                    visited[newRow][newCol] = true;
+                    pq.offer(new int[]{newRow,newCol,grid.get(newRow).get(newCol)+value});
+                }
+            }
+
+        }
+        return false;
+
+
+    }
 }
