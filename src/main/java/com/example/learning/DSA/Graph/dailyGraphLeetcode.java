@@ -4,16 +4,21 @@ import java.util.*;
 
 public class dailyGraphLeetcode {
     public static void main(String[] args) {
-        int[][] edges = {{0,1,5},{1,3,10},{0,2,3},{2,3,4}};
-        boolean[] online = {true,true,true,true};
-        int k = 10;
-        System.out.println(findMaxPathScore(edges,online,k));
+//        int[][] edges = {{0, 1, 5}, {1, 3, 10}, {0, 2, 3}, {2, 3, 4}};
+//        boolean[] online = {true, true, true, true};
+//        int k = 10;
+//        System.out.println(findMaxPathScore(edges, online, k));
+
+        int n = 4;
+        //  int[][] roads = {{1, 2, 9}, {2, 3, 6}, {2, 4, 5}, {1, 4, 7}};
+        int[][] roads = {{1, 2, 2}, {1, 3, 4}, {3, 4, 7}};
+        System.out.println(minScore(n, roads));
     }
 
-    public static boolean dijikstr( List<List<int[]>> adjList, boolean[] online,long k, long limit, int numberOfNodes) {
-        PriorityQueue<long[]> priorityQueue = new PriorityQueue<>((a,b)->Long.compare(a[0],b[0]));
+    public static boolean dijikstr(List<List<int[]>> adjList, boolean[] online, long k, long limit, int numberOfNodes) {
+        PriorityQueue<long[]> priorityQueue = new PriorityQueue<>((a, b) -> Long.compare(a[0], b[0]));
         long[] dist = new long[numberOfNodes];
-        Arrays.fill(dist,Integer.MAX_VALUE);
+        Arrays.fill(dist, Integer.MAX_VALUE);
         priorityQueue.offer(new long[]{0, 0});
         dist[0] = 0;
         while (!priorityQueue.isEmpty()) {
@@ -21,28 +26,28 @@ public class dailyGraphLeetcode {
             long cost = pollData[0];
             int node = (int) pollData[1];
 
-            if(dist[node]<cost) {
+            if (dist[node] < cost) {
                 continue;
             }
 
             int childNumber = adjList.get(node).size();
-            for(int i = 0;i<childNumber;i++) {
+            for (int i = 0; i < childNumber; i++) {
                 int[] children = adjList.get(node).get(i);
                 int childNode = children[0];
                 int costChildren = children[1];
 
-                if(!online[childNode]) {
+                if (!online[childNode]) {
                     continue;
                 }
 
-                if(costChildren<limit) {
+                if (costChildren < limit) {
                     continue;
                 }
 
-                long costToReachFromO = cost+costChildren;
-                if(dist[childNode]>costToReachFromO) {
-                    dist[childNode]  = costToReachFromO;
-                    priorityQueue.offer(new long[]{costToReachFromO,childNode});
+                long costToReachFromO = cost + costChildren;
+                if (dist[childNode] > costToReachFromO) {
+                    dist[childNode] = costToReachFromO;
+                    priorityQueue.offer(new long[]{costToReachFromO, childNode});
                 }
             }
 
@@ -59,7 +64,7 @@ public class dailyGraphLeetcode {
 
         List<List<int[]>> adjList = new ArrayList<>();
 
-        for(int i=0;i<numberOfNodes;i++) {
+        for (int i = 0; i < numberOfNodes; i++) {
             adjList.add(new ArrayList<>());
         }
 
@@ -81,20 +86,66 @@ public class dailyGraphLeetcode {
         //binary search
 
 
-        while (lowCost<=highCost) {
-            int mid = (lowCost+highCost)/2;
+        while (lowCost <= highCost) {
+            int mid = (lowCost + highCost) / 2;
 
-            if(dijikstr(adjList,online,k,mid,numberOfNodes)) {
+            if (dijikstr(adjList, online, k, mid, numberOfNodes)) {
                 res = mid;
-                lowCost = mid+1;
+                lowCost = mid + 1;
             } else {
-                highCost = mid-1;
+                highCost = mid - 1;
             }
 
         }
 
         return res;
 
+    }
+
+    //n = 4, roads = [[1,2,2],[1,3,4],[3,4,7]]
+
+    public static int minScore(int n, int[][] roads) {
+        List<List<int[]>> adjList = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            adjList.add(new ArrayList<>());
+        }
+
+        for (int[] road : roads) {
+            int parent = road[0];
+            int child = road[1];
+            int weight = road[2];
+
+            adjList.get(parent).add(new int[]{child, weight});
+            adjList.get(child).add(new int[]{parent, weight});
+        }
+
+
+        List<Integer> nodesInTheComponent = new ArrayList<>();
+        boolean[] visited = new boolean[n + 1];
+        dfs(1, adjList, visited, nodesInTheComponent);
+
+        int ans = Integer.MAX_VALUE;
+
+        for (int node : nodesInTheComponent) {
+            for (int[] child : adjList.get(node)) {
+                int weight = child[1];
+                ans = Math.min(ans, weight);
+            }
+        }
+
+        return ans;
+
+    }
+
+    public static void dfs(int node, List<List<int[]>> adjList, boolean[] visited, List<Integer> nodesInTheComponent) {
+        visited[node] = true;
+        nodesInTheComponent.add(node);
+        for (int[] child : adjList.get(node)) {
+            int neigh = child[0];
+            if (!visited[neigh]) {
+                dfs(neigh, adjList, visited, nodesInTheComponent);
+            }
+        }
     }
 
 }
