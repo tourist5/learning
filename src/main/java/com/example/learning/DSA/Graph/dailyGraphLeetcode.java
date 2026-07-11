@@ -9,10 +9,15 @@ public class dailyGraphLeetcode {
 //        int k = 10;
 //        System.out.println(findMaxPathScore(edges, online, k));
 
+//        int n = 4;
+//        //  int[][] roads = {{1, 2, 9}, {2, 3, 6}, {2, 4, 5}, {1, 4, 7}};
+//        int[][] roads = {{1, 2, 2}, {1, 3, 4}, {3, 4, 7}};
+//        System.out.println(minScore(n, roads));
         int n = 4;
-        //  int[][] roads = {{1, 2, 9}, {2, 3, 6}, {2, 4, 5}, {1, 4, 7}};
-        int[][] roads = {{1, 2, 2}, {1, 3, 4}, {3, 4, 7}};
-        System.out.println(minScore(n, roads));
+        int[] nums = {2,5,6,8};
+        int maxDiff = 2;
+        int[][] queries = {{0,1},{0,2},{1,3},{2,3}};
+        System.out.println(Arrays.toString(pathExistenceQueries(n, nums, maxDiff, queries)));
     }
 
     public static boolean dijikstr(List<List<int[]>> adjList, boolean[] online, long k, long limit, int numberOfNodes) {
@@ -148,6 +153,98 @@ public class dailyGraphLeetcode {
         }
     }
 
+    static class DSU{
+        int[] parent;
+        int[] size;
+
+        DSU(int n) {
+            this.parent = new int[n];
+            this.size = new int[n];
+            for(int i =0;i<n;i++) {
+                parent[i] = i;
+            }
+            Arrays.fill(size,1);
+        }
+
+        int findParent(int node) {
+            if(parent[node]==node) {
+                return node;
+            }
+            parent[node]=findParent(parent[node]);
+            return parent[node];
+        }
+
+        void unionBySize(int node1,int node2) {
+            int parentNode1 = findParent(node1);
+            int parentNode2 = findParent(node2);
+
+            if(size[parentNode1]>size[parentNode2]) {
+                parent[parentNode2]=parentNode1;
+                size[parentNode1]+=size[parentNode2];
+            } else {
+                parent[parentNode1] = parentNode2;
+                size[parentNode2]+=size[parentNode1];
+            }
+        }
+    }
+
+    public static boolean[] pathExistenceQueries(int n, int[] nums, int maxDiff, int[][] queries) {
+        DSU dsu = new DSU(n);
+
+
+
+        for(int i=1;i<n;i++) {
+            //no need to find aal
+//            int currentStartValue = nums[i];
+//            int left = i;
+//            int right = n-1;
+//            int upperBound = left;
+//
+//            while(left<=right) {
+//                int mid = (left+right)/2;
+//                if(currentStartValue+maxDiff>=nums[mid]) {
+//                    upperBound = mid;
+//                    left=mid+1;
+//                } else {
+//                    right=mid-1;
+//                }
+//            }
+//            int parentNode1 = dsu.findParent(i);
+//
+//            for(int j=i+1;j<=upperBound;j++) {
+//                int parentNode2 = dsu.findParent(j);
+//                if(parentNode1==parentNode2) {
+//                    continue;
+//                }
+//                dsu.unionBySize(i,j);
+//            }
+
+            if(nums[i]<=nums[i-1]+maxDiff) {
+                int node1 = i-1;
+                int node2 = i;
+                if(dsu.findParent(node1)==dsu.findParent(node2)){
+                    continue;
+                }
+                dsu.unionBySize(node1,node2);
+            }
+        }
+
+        System.out.println("parent->"+ Arrays.toString(dsu.parent));
+
+
+        int querySize = queries.length;
+        boolean[] ans = new boolean[querySize];
+
+        for(int i=0;i<querySize;i++) {
+            int node1 = queries[i][0];
+            int node2 = queries[i][1];
+
+            ans[i] = dsu.findParent(node1) == dsu.findParent(node2);
+        }
+
+        return ans;
+
+    }
 
 
 }
