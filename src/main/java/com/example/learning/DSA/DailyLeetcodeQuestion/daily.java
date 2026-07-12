@@ -28,7 +28,7 @@ public class daily {
                 Arrays.asList(0, 1, 1, 1, 0, 1),
                 Arrays.asList(0, 0, 1, 0, 1, 0)
         );
-        System.out.println(findSafeWalk(matrix,5));
+        System.out.println(findSafeWalk(matrix, 5));
     }
 
     //6-2=4
@@ -407,7 +407,7 @@ public class daily {
 
     }
 
-    static boolean valid2(int currentRow,int currentCol, int row, int col, boolean[][] visited) {
+    static boolean valid2(int currentRow, int currentCol, int row, int col, boolean[][] visited) {
         return currentRow >= 0 && currentRow < row && currentCol >= 0 && currentCol < col && !visited[currentRow][currentCol];
     }
 
@@ -417,13 +417,13 @@ public class daily {
 
         //use dijkstra algorithm , to find the shortest path or the least health to go to end position
 
-       // [[1,1,1],[1,0,1],[1,1,1]], health = 5
+        // [[1,1,1],[1,0,1],[1,1,1]], health = 5
         boolean[][] visited = new boolean[row][col];
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)->a[2]-b[2]);
-        int count  = 0;
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[2] - b[2]);
+        int count = 0;
         visited[0][0] = true;
-        pq.offer(new int[]{0,0,grid.get(0).get(0)});
-        int[][] dist = {{1,0},{-1,0},{0,1},{0,-1}};
+        pq.offer(new int[]{0, 0, grid.get(0).get(0)});
+        int[][] dist = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
         while (!pq.isEmpty()) {
             int[] poll = pq.poll();
             int removedRow = poll[0];
@@ -431,16 +431,16 @@ public class daily {
             int value = poll[2];
             System.out.println(Arrays.toString(poll));
 
-            if(removedRow==row-1 && removedCol==col-1) {
+            if (removedRow == row - 1 && removedCol == col - 1) {
                 return health >= value;
             }
 
-            for(int[] currentDist : dist) {
-                int newRow = removedRow+currentDist[0];
-                int newCol = removedCol+currentDist[1];
-                if(valid2(newRow,newCol,row,col,visited)) {
+            for (int[] currentDist : dist) {
+                int newRow = removedRow + currentDist[0];
+                int newCol = removedCol + currentDist[1];
+                if (valid2(newRow, newCol, row, col, visited)) {
                     visited[newRow][newCol] = true;
-                    pq.offer(new int[]{newRow,newCol,grid.get(newRow).get(newCol)+value});
+                    pq.offer(new int[]{newRow, newCol, grid.get(newRow).get(newCol) + value});
                 }
             }
 
@@ -448,5 +448,29 @@ public class daily {
         return false;
 
 
+    }
+
+    public int[] arrayRankTransform(int[] arr) {
+        int len = arr.length;
+        if(len==0) {
+            return new int[]{};
+        }
+        int[] temp = Arrays.copyOf(arr,arr.length);
+        Arrays.sort(arr);
+        Map<Integer,Integer> map= new HashMap<>();
+        int[] ans = new int[arr.length];
+        map.put(arr[0],1);
+        for(int i =1;i<len;i++) {
+            if(arr[i]==arr[i-1]) {
+                continue;
+            }
+            Integer prevRank = map.get(arr[i - 1]);
+            map.put(arr[i],prevRank+1);
+        }
+        for(int i=0;i< temp.length;i++) {
+            int value = map.get(temp[i]);
+            ans[i]=value;
+        }
+        return ans;
     }
 }
