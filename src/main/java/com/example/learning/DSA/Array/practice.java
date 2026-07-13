@@ -4,9 +4,10 @@ import java.util.*;
 
 public class practice {
     public static void main(String[] args) {
-        int[] nums = {1, 1, 1, 2, 2, 3};
-        System.out.println(longestConsecutive(nums));
-//        System.out.println(topKFrequent(nums,));
+//        int[] nums = {1, 1, 1, 2, 2, 3};
+//        System.out.println(longestConsecutive(nums));
+////        System.out.println(topKFrequent(nums,));
+        sequentialDigits(10,100000);
     }
 
     public static int longestConsecutive(int[] nums) {
@@ -121,30 +122,70 @@ public class practice {
 //    }
 
     public int[] topKFrequent(int[] nums, int k) {
-        HashMap<Integer,Integer> map = new HashMap<>();
-        for(int i: nums) {
-            map.put(i,map.getOrDefault(i,0)+1);
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i : nums) {
+            map.put(i, map.getOrDefault(i, 0) + 1);
         }
 
-        List<Integer>[] buckets = new ArrayList[nums.length+1];
-        for(int i=0;i<=nums.length;i++) {
+        List<Integer>[] buckets = new ArrayList[nums.length + 1];
+        for (int i = 0; i <= nums.length; i++) {
             buckets[i] = new ArrayList<>();
         }
-        for(Map.Entry<Integer,Integer> currentEle:map.entrySet()) {
-            Integer key= currentEle.getKey();
+        for (Map.Entry<Integer, Integer> currentEle : map.entrySet()) {
+            Integer key = currentEle.getKey();
             int value = currentEle.getValue();
             buckets[value].add(key);
         }
         int cnt = 0;
         int[] ans = new int[k];
-        for(int i=nums.length;i>=1;i--) {
+        for (int i = nums.length; i >= 1; i--) {
             List<Integer> val = buckets[i];
-            if(cnt==k) {
+            if (cnt == k) {
                 break;
             }
-            for(int num: val) {
+            for (int num : val) {
                 ans[cnt] = num;
                 cnt++;
+            }
+        }
+
+        return ans;
+
+    }
+
+    public static List<Integer> sequentialDigits(int low, int high) {
+        int cnt = 8;
+        int digit = 2;
+
+        List<Integer> tempRes = new ArrayList<>();
+        while (cnt>0) {
+            int start = 1;
+            while(start<=cnt) {
+                int nextDigit = start;
+                int number = nextDigit;
+                for(int i=2;i<=digit;i++) {
+                    nextDigit = nextDigit+1;
+                    number = number*10+nextDigit;
+                }
+                tempRes.add(number);
+                start++;
+            }
+
+            digit++;
+            cnt--;
+        }
+
+        System.out.println(tempRes);
+
+        List<Integer> ans = new ArrayList<>();
+
+        for(int i=0;i<tempRes.size();i++) {
+            int val = tempRes.get(i);
+            if(val>high) {
+                break;
+            }
+            if(low<=val) {
+                ans.add(val);
             }
         }
 
