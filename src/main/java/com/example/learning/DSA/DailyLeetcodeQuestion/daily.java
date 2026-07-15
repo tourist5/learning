@@ -473,4 +473,8 @@ public class daily {
         }
         return ans;
     }
+
+    public int gcdOfOddEvenSums(int n) {
+        return n;
+    }
 }
