@@ -22,13 +22,18 @@ public class daily {
 //                        Arrays.asList(0, 0, 0)
 //                )
 //        );
-        List<List<Integer>> matrix = Arrays.asList(
-                Arrays.asList(0, 1, 1, 0, 0, 0),
-                Arrays.asList(1, 0, 1, 0, 0, 0),
-                Arrays.asList(0, 1, 1, 1, 0, 1),
-                Arrays.asList(0, 0, 1, 0, 1, 0)
-        );
-        System.out.println(findSafeWalk(matrix, 5));
+//        List<List<Integer>> matrix = Arrays.asList(
+//                Arrays.asList(0, 1, 1, 0, 0, 0),
+//                Arrays.asList(1, 0, 1, 0, 0, 0),
+//                Arrays.asList(0, 1, 1, 1, 0, 1),
+//                Arrays.asList(0, 0, 1, 0, 1, 0)
+//        );
+//        System.out.println(findSafeWalk(matrix, 5));
+//        System.out.println(gcdOfNumber(30,7));
+
+        int[][] grid = {{1,2,3},{4,5,6},{7,8,9}};
+        int k = 1;
+        System.out.println(shiftGrid(grid,k));
     }
 
     //6-2=4
@@ -452,24 +457,24 @@ public class daily {
 
     public int[] arrayRankTransform(int[] arr) {
         int len = arr.length;
-        if(len==0) {
+        if (len == 0) {
             return new int[]{};
         }
-        int[] temp = Arrays.copyOf(arr,arr.length);
+        int[] temp = Arrays.copyOf(arr, arr.length);
         Arrays.sort(arr);
-        Map<Integer,Integer> map= new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
         int[] ans = new int[arr.length];
-        map.put(arr[0],1);
-        for(int i =1;i<len;i++) {
-            if(arr[i]==arr[i-1]) {
+        map.put(arr[0], 1);
+        for (int i = 1; i < len; i++) {
+            if (arr[i] == arr[i - 1]) {
                 continue;
             }
             Integer prevRank = map.get(arr[i - 1]);
-            map.put(arr[i],prevRank+1);
+            map.put(arr[i], prevRank + 1);
         }
-        for(int i=0;i< temp.length;i++) {
+        for (int i = 0; i < temp.length; i++) {
             int value = map.get(temp[i]);
-            ans[i]=value;
+            ans[i] = value;
         }
         return ans;
     }
@@ -477,4 +482,72 @@ public class daily {
     public int gcdOfOddEvenSums(int n) {
         return n;
     }
+
+    public long gcdSum(int[] nums) {
+       int ma = Integer.MIN_VALUE;
+       int len = nums.length;
+       int[] temp = new int[len];
+       for(int i=0;i<len;i++) {
+           ma = Math.max(ma,nums[i]);
+           temp[i] = gcdOfNumber(ma,nums[i]);
+       }
+       Arrays.sort(temp);
+       int left = 0;
+       int right = len-1;
+       long ans = 0;
+       while(left<right) {
+           int a =temp[left];
+           int b = temp[right];
+           ans+=gcdOfNumber(a,b);
+           left++;
+           right--;
+       }
+       return ans;
+    }
+
+    public static int gcdOfNumber(int a ,int b) {
+        while(b!=0) {
+            int rem = a%b;
+            if(rem==0) {
+                return b;
+            }
+            a=b;
+            b=rem;
+        }
+        return 1;
+    }
+
+    public static List<List<Integer>> shiftGrid(int[][] grid, int k) {
+        int row = grid.length;
+        int col = grid[0].length;
+
+        int[][] ans = new int[row][col];
+
+        for(int j=0;j<col;j++) {
+            for(int i=0;i<row;i++) {
+                int newRow = (i+(j+k)/col)%row;
+                System.out.println("currentRow "+ i + " newRow "+ newRow);
+                int newCol = (j+k)%col;
+                System.out.println("currentCol "+ j + " newCol "+ newCol);
+
+                ans[newRow][newCol] = grid[i][j];
+            }
+        }
+
+        System.out.println(Arrays.deepToString(ans));
+
+        List<List<Integer>> res = new ArrayList<>();
+
+        for(int i=0;i<row;i++) {
+            List<Integer> currentRes = new ArrayList<>();
+            for(int j=0;j<col;j++) {
+                int temp = ans[i][j];
+                currentRes.add(temp);
+            }
+            res.add(currentRes);
+        }
+
+        return res;
+    }
+
 }
