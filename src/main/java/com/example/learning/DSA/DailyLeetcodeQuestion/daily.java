@@ -550,4 +550,35 @@ public class daily {
         return res;
     }
 
+    public int uniqueXorTriplets(int[] nums) {
+        int len = nums.length;
+
+        boolean[] pair = new boolean[2049];
+        boolean[] triplet = new boolean[2049];
+
+        for(int i=0;i<len;i++) {
+            for(int j=i;j<len;j++) {
+                int pairRes = nums[i]^nums[j];
+                pair[pairRes] = true;
+            }
+        }
+
+        int ans =0;
+        for(int i=0;i<2049;i++) {
+            if(!pair[i]) {
+                continue;
+            }
+            for(int j=0;j<len;j++) {
+                int tripletRes = i^nums[j];
+                if(!triplet[tripletRes]) {
+                    triplet[tripletRes] = true;
+                    ans++;
+                }
+            }
+        }
+
+        return ans;
+
+    }
+
 }
