@@ -581,4 +581,22 @@ public class daily {
 
     }
 
+    public int maxProduct(int n) {
+        List<Integer> list = new ArrayList<>();
+        while(n>0) {
+            int digit = n%10;
+            n=n/10;
+            list.add(digit);
+        }
+        int ans = Integer.MIN_VALUE;
+        for(int i=0;i<list.size()-1;i++) {
+            int firstEle = list.get(i);
+            for(int j=i+1;j<list.size();j++) {
+                int secondEle = list.get(j);
+                ans = Math.max(ans,firstEle*secondEle);
+            }
+        }
+        return ans;
+    }
+
 }
